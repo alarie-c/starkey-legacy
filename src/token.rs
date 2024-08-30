@@ -9,14 +9,15 @@ pub struct TextSpan {
 }
 
 impl TextSpan {
-    pub fn from(start: usize, end: usize) -> Self {
+    pub fn from(start: usize, len: usize) -> Self {
         Self {
-            range: Range::from(start..end)
+            range: Range::from(start..start + len)
         }
     }
 }
 
 // Holds information for every token created by the lexer, including a span
+#[derive(Debug)]
 pub struct Token {
     pub span: TextSpan,
     pub kind: TokenKind,
@@ -55,16 +56,56 @@ pub enum TokenKind {
     // Grouping
     LPar,
     RPar,
+    LBrac,
+    RBrac,
+    LCurl,
+    RCurl,
 
     // Operators
     Plus,
+    PlusEqual,
+    Minus,
+    MinusEqual,
+    Equal,
+    EqualEqual,
+    Star,
+    Slash,
+    SlashSlash,
+    Hash,
+    Ampersand,
+    Exponent,
+    Modulo,
+
+    // Comparisons
+    More,
+    MoreEqual,
+    Less,
+    LessEqual,
+    Bang,
+    BangEqual,
 
     // Symbols
     Colon,
+    ColonColon,
+    Semicolon,
+    Comma,
+    Dot,
+    Arrow,
+    Logger,
+
+    // Literals
+    Literal(String),
+    Number(String),
+    Identifier(String),
 
     // Keywords
     Let,
     Mut,
+    If,
+    Elif,
+    Else,
+    While,
+    For,
 
     // Other
     EndOfFile,
