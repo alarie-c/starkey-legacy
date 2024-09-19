@@ -47,7 +47,7 @@ Functions cannot modify any values outside of their environment.
 This means functions that do this must be annotated with "mut."
 
 Basic function
-````
+```
 func add_five(x :: int) -> int
 {
     return x + 5;
