@@ -11,7 +11,7 @@ pub struct TextSpan {
 impl TextSpan {
     pub fn from(start: usize, len: usize) -> Self {
         Self {
-            range: Range::from(start..start + len)
+            range: Range::from(start..start + (len - 1))
         }
     }
 }
@@ -31,11 +31,6 @@ impl Display for Token {
 
 
 impl Token {
-    pub fn from(kind: TokenKind, start: usize, end: usize) -> Self {
-        let span = TextSpan::from(start, end);
-        Self { span, kind }
-    }
-
     pub fn get_lexeme(&self) -> &str {
         match &self.kind {
             TokenKind::LPar => "(",
@@ -51,7 +46,7 @@ impl Token {
 // Defines each kind of token to be parsed
 // Some, like literals and identifiers hold string values which are the lexeme
 // from the source code, generally the name of an identifier or the value of a literal
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum TokenKind {
     // Grouping
     LPar,
@@ -109,4 +104,18 @@ pub enum TokenKind {
 
     // Other
     EndOfFile,
+}
+
+impl TokenKind {
+    pub fn is_leaf_node(&self) -> bool {
+        match self {
+            TokenKind::Semicolon => false,
+            TokenKind::Comma => false,
+            TokenKind::Literal(_) => false,
+            TokenKind::Number(_) => false,
+            TokenKind::Identifier(_) => false,
+            TokenKind::EndOfFile => false,
+            _ => true
+        }
+    }
 }
