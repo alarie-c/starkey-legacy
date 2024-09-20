@@ -1,11 +1,12 @@
 use std::{env, fs};
 
 use lexer::Lexer;
-//use parser::Parser;
+use parser::Parser;
 
 mod token;
 mod lexer;
 mod ast;
+mod parser;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -20,6 +21,10 @@ fn main() {
         let mut lexer = Lexer::new(&src);
         let tokens = lexer.scan();
         dbg!(&tokens);
+
+        // Parse + AstGen
+        let mut parser = Parser::new(&tokens);
+        
 
     } else {
         // File path was likely not specified

@@ -21,6 +21,7 @@ impl TextSpan {
 pub struct Token {
     pub span: TextSpan,
     pub kind: TokenKind,
+    pub value: Option<String>,
 }
 
 impl Display for Token {
@@ -89,9 +90,9 @@ pub enum TokenKind {
     Logger,
 
     // Literals
-    Literal(String),
-    Number(String),
-    Identifier(String),
+    Literal,
+    Number,
+    Identifier,
 
     // Keywords
     Let,
@@ -104,18 +105,4 @@ pub enum TokenKind {
 
     // Other
     EndOfFile,
-}
-
-impl TokenKind {
-    pub fn is_leaf_node(&self) -> bool {
-        match self {
-            TokenKind::Semicolon => false,
-            TokenKind::Comma => false,
-            TokenKind::Literal(_) => false,
-            TokenKind::Number(_) => false,
-            TokenKind::Identifier(_) => false,
-            TokenKind::EndOfFile => false,
-            _ => true
-        }
-    }
 }

@@ -1,10 +1,10 @@
 /// Highest level component of the AST, stores every node
 #[derive(Debug)]
-pub struct AST {
+pub struct Ast {
     pub nodes: Vec<Node>,
 }
 
-impl AST {
+impl Ast {
     pub fn add(&mut self, node: Node) {
         self.nodes.push(node);
     }
