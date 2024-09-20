@@ -26,6 +26,27 @@ pub enum Node {
     UnaryExpr(UnaryExpr),
     Integer(i32),
     Float(f32),
+    Identifier(String),
+
+    /// Index by association is how associated functions are access via identifiers
+    /// representing either modules or data structures in memory.
+    /// 
+    /// It follows a format of `IndexByAssoc(Box<Node>, String)` where `Box<Node>` is the Identifier node of
+    /// the indexee and the `String` is the key to index node with.
+    IndexByAssoc(Box<Node>, Box<Node>),
+    IndexByMember(Box<Node>, Box<Node>),
+
+    /// Value declarations use String as keys to the environment map and nodes as the values they point to
+    /// Value declarations cannot be mutable unless 
+    ValueDeclaration(VariableExpr),
+}
+
+#[derive(Debug)]
+pub struct VariableExpr {
+    pub key: Box<Node>,
+    pub value: Box<Node>,
+    pub mutable: bool,
+    pub annotation: Option<Box<Node>>,
 }
 
 #[derive(Debug)]

@@ -1,11 +1,10 @@
 use std::{env, fs};
 
 use lexer::Lexer;
-use parser::Parser;
+//use parser::Parser;
 
 mod token;
 mod lexer;
-mod parser;
 mod ast;
 
 fn main() {
@@ -21,11 +20,6 @@ fn main() {
         let mut lexer = Lexer::new(&src);
         let tokens = lexer.scan();
         dbg!(&tokens);
-
-        // Parse into AST
-        let mut parser = Parser::new(&tokens);
-        parser.parse();
-        dbg!(&parser.ast);
 
     } else {
         // File path was likely not specified
