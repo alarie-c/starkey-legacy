@@ -8,10 +8,14 @@ pub struct Lexer<'a> {
 
 impl<'a> Lexer<'a> {
     pub fn new(src: &'a str) -> Self {
-        Self { src: src.as_bytes(), idx: 0usize, output: Vec::new() }
+        Self {
+            src: src.as_bytes(),
+            idx: 0usize,
+            output: Vec::new(),
+        }
     }
 
-    pub fn scan(&mut self) -> &Vec<Token> {       
+    pub fn scan(&mut self) -> &Vec<Token> {
         loop {
             // Break the loop if we reach the end
             if self.idx >= self.src.len() {
@@ -23,7 +27,7 @@ impl<'a> Lexer<'a> {
             match &self.src[self.idx..] {
                 // Ignore whitespace & newline chars
                 [b' ', ..] | [b'\t', ..] | [b'\n', ..] | [b'\r', ..] => self.idx += 1,
-                
+
                 // Grouping tokens
                 [b'(', ..] => self.add_token(TokenKind::LPar, self.idx, 1, None),
                 [b')', ..] => self.add_token(TokenKind::RPar, self.idx, 1, None),
@@ -51,7 +55,7 @@ impl<'a> Lexer<'a> {
                 [b'.', ..] => self.add_token(TokenKind::Dot, self.idx, 1, None),
                 [b',', ..] => self.add_token(TokenKind::Comma, self.idx, 1, None),
                 [b':', ..] => self.add_token(TokenKind::Colon, self.idx, 1, None),
-                
+
                 // Comparison tokens
                 [b'=', b'=', ..] => self.add_token(TokenKind::EqualEqual, self.idx, 2, None),
                 [b'<', b'=', ..] => self.add_token(TokenKind::LessEqual, self.idx, 2, None),
@@ -76,12 +80,17 @@ impl<'a> Lexer<'a> {
                         "else" => self.static_add_token(TokenKind::Else, begin, 4, None),
                         "elif" => self.static_add_token(TokenKind::Elif, begin, 4, None),
                         "while" => self.static_add_token(TokenKind::While, begin, 5, None),
-                        "let" => self.static_add_token(TokenKind::Let, begin, 3, None),
-                        "mut" => self.static_add_token(TokenKind::Mut, begin, 3, None),
+                        "var" => self.static_add_token(TokenKind::Var, begin, 3, None),
+                        "val" => self.static_add_token(TokenKind::Val, begin, 3, None),
                         "for" => self.static_add_token(TokenKind::For, begin, 3, None),
-                        _ => self.static_add_token(TokenKind::Identifier, begin, self.idx - begin, Some(identifier)),
+                        _ => self.static_add_token(
+                            TokenKind::Identifier,
+                            begin,
+                            self.idx - begin,
+                            Some(identifier),
+                        ),
                     }
-                },
+                }
 
                 // Other
                 _ => panic!("! Bad token !"),
@@ -93,13 +102,27 @@ impl<'a> Lexer<'a> {
 
     // Pushes a token and advances idx according to length of span
     fn add_token(&mut self, kind: TokenKind, begin: usize, len: usize, value: Option<String>) {
-        self.output.push(Token { kind, span: TextSpan::from(begin, len), value });
+        self.output.push(Token {
+            kind,
+            span: TextSpan::from(begin, len),
+            value,
+        });
         self.idx += len;
     }
 
     // Pushes token but idx remains unchanged
-    fn static_add_token(&mut self, kind: TokenKind, begin: usize, len: usize, value: Option<String>) {
-        self.output.push(Token { kind, span: TextSpan::from(begin, len), value });
+    fn static_add_token(
+        &mut self,
+        kind: TokenKind,
+        begin: usize,
+        len: usize,
+        value: Option<String>,
+    ) {
+        self.output.push(Token {
+            kind,
+            span: TextSpan::from(begin, len),
+            value,
+        });
     }
 
     fn str_literal(&mut self) {
@@ -120,16 +143,24 @@ impl<'a> Lexer<'a> {
         }
 
         // Push new token
-        self.static_add_token(TokenKind::Literal, begin, self.idx - begin, Some(buf.to_owned()));
+        self.static_add_token(
+            TokenKind::Literal,
+            begin,
+            self.idx - begin,
+            Some(buf.to_owned()),
+        );
     }
 
     fn num_literal(&mut self) {
         let begin = self.idx;
         let mut buf = String::from(self.src[self.idx] as char);
         self.idx += 1;
-        
+
         while self.idx < self.src.len() {
-            if self.src[self.idx].is_ascii_digit() || self.src[self.idx] == b'_' || self.src[self.idx] == b'.' {
+            if self.src[self.idx].is_ascii_digit()
+                || self.src[self.idx] == b'_'
+                || self.src[self.idx] == b'.'
+            {
                 buf.push(self.src[self.idx] as char);
                 self.idx += 1;
             } else {
@@ -138,7 +169,12 @@ impl<'a> Lexer<'a> {
         }
 
         // Push new token
-        self.static_add_token(TokenKind::Number, begin, self.idx - begin, Some(buf.to_owned()));
+        self.static_add_token(
+            TokenKind::Number,
+            begin,
+            self.idx - begin,
+            Some(buf.to_owned()),
+        );
     }
 
     fn take_ident(&mut self) -> String {

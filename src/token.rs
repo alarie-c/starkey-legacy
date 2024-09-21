@@ -5,13 +5,13 @@ use std::{fmt::Display, ops::Range};
 // counting newlines and columns.
 #[derive(Debug)]
 pub struct TextSpan {
-    pub range: Range<usize>
+    pub range: Range<usize>,
 }
 
 impl TextSpan {
     pub fn from(start: usize, len: usize) -> Self {
         Self {
-            range: Range::from(start..start + (len - 1))
+            range: Range::from(start..start + (len - 1)),
         }
     }
 }
@@ -26,10 +26,15 @@ pub struct Token {
 
 impl Display for Token {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{:?} :: {:?} :: {}", self.span, self.kind, self.get_lexeme())
+        write!(
+            f,
+            "{:?} :: {:?} :: {}",
+            self.span,
+            self.kind,
+            self.get_lexeme()
+        )
     }
 }
-
 
 impl Token {
     pub fn get_lexeme(&self) -> &str {
@@ -39,7 +44,7 @@ impl Token {
             TokenKind::Plus => "+",
             TokenKind::Colon => ":",
             TokenKind::EndOfFile => "<EOF>",
-            _ => " "
+            _ => " ",
         }
     }
 }
@@ -95,8 +100,8 @@ pub enum TokenKind {
     Identifier,
 
     // Keywords
-    Let,
-    Mut,
+    Val,
+    Var,
     If,
     Elif,
     Else,
@@ -105,4 +110,15 @@ pub enum TokenKind {
 
     // Other
     EndOfFile,
+}
+
+impl TokenKind {
+    pub fn leaf_node(&self) -> bool {
+        match self {
+            TokenKind::Identifier => true,
+            TokenKind::Literal => true,
+            TokenKind::Number => true,
+            _ => false,
+        }
+    }
 }
