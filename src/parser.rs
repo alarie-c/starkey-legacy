@@ -63,6 +63,10 @@ impl<'a> Parser<'a> {
     }
 
     fn expression(&mut self) -> Option<Node> {
+        if self.idx >= self.as_kind.len() {
+            return None;
+        }
+
         match self.as_kind.as_slice()[self.idx..] {
             [Tk::Number, ..] => self.parse_number(),
             [Tk::Var, Tk::Identifier, Tk::ColonColon, ..] => self.parse_val_annotated(true),
@@ -74,10 +78,46 @@ impl<'a> Parser<'a> {
         }
     }
 
-    // TODO: Indexing onto this nonsense
     fn parse_identifier(&mut self) -> Option<Node> {
         let name = self.this().value.as_ref().unwrap();
-        Some(Node::Identifier(name.to_string()))
+
+        // We want to check to make sure there's no more stuff going on here
+        match self.as_kind.as_slice()[self.idx..] {
+            // Access member
+            [Tk::Identifier, Tk::Dot, ..] => {
+                self.idx += 2; // skip the dot
+                let maybe_member = self.expression();
+                let ident = Node::Identifier(name.to_string());
+
+                // Construct node
+                if maybe_member.is_some() {
+                    Some(Node::AccessMember(
+                        Box::new(ident),
+                        Box::new(maybe_member.unwrap()),
+                    ))
+                } else {
+                    Some(Node::Identifier(name.to_string()))
+                }
+            }
+            // Invoke member
+            [Tk::Identifier, Tk::Colon, ..] => {
+                self.idx += 2; // skip the colon
+                let maybe_method = self.expression();
+                let ident = Node::Identifier(name.to_string());
+
+                // Construct node
+                if maybe_method.is_some() {
+                    Some(Node::InvokeMember(
+                        Box::new(ident),
+                        Box::new(maybe_method.unwrap()),
+                    ))
+                } else {
+                    Some(Node::Identifier(name.to_string()))
+                }
+            }
+            // Just return the identifier
+            _ => Some(Node::Identifier(name.to_string())),
+        }
     }
 
     fn parse_val(&mut self, mutable: bool) -> Option<Node> {

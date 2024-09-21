@@ -1,1 +1,1 @@
-var x :: int = 0
+val x = module.member:method()
