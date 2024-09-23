@@ -28,12 +28,37 @@ pub enum Node {
     Float(f32),
     Identifier(String),
 
+    // Functions and stuff
+    Function(FunctionExpr),
+    Parameter(ParameterExpr),
+
     AccessMember(Box<Node>, Box<Node>),
     InvokeMember(Box<Node>, Box<Node>),
 
     /// Value declarations use String as keys to the environment map and nodes as the values they point to
     /// Value declarations cannot be mutable unless
     ValueDeclaration(VariableExpr),
+}
+
+#[derive(Debug)]
+pub struct ParameterExpr {
+    pub ident: Box<Node>,
+    pub annotation: Box<Node>,
+    pub mutable: bool,
+}
+
+#[derive(Debug)]
+pub struct FunctionSignature {
+    pub name: String,
+    pub params: Vec<Node>,
+    pub returns: Box<Node>,
+    pub mutable: bool,
+}
+
+#[derive(Debug)]
+pub struct FunctionExpr {
+    pub signature: FunctionSignature,
+    pub body: Vec<Node>,
 }
 
 #[derive(Debug)]

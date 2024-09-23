@@ -83,6 +83,8 @@ impl<'a> Lexer<'a> {
                         "var" => self.static_add_token(TokenKind::Var, begin, 3, None),
                         "val" => self.static_add_token(TokenKind::Val, begin, 3, None),
                         "for" => self.static_add_token(TokenKind::For, begin, 3, None),
+                        "mut" => self.static_add_token(TokenKind::Mut, begin, 5, None),
+                        "func" => self.static_add_token(TokenKind::Func, begin, 4, None),
                         _ => self.static_add_token(
                             TokenKind::Identifier,
                             begin,

@@ -107,6 +107,8 @@ pub enum TokenKind {
     Else,
     While,
     For,
+    Func,
+    Mut,
 
     // Other
     EndOfFile,
