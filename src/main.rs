@@ -1,6 +1,8 @@
 use std::{env, fs, io};
 
+mod ast;
 mod lexer;
+mod parser;
 mod token;
 
 fn main() -> Result<(), io::Error> {
@@ -22,6 +24,7 @@ fn main() -> Result<(), io::Error> {
     let src = fs::read_to_string(&path)?;
     println!("Source file path: {path}");
 
+    // Initialize lexer for file
     let mut lexer = lexer::Lexer::new(src.as_str());
     let tokens = lexer.scan();
     dbg!(&tokens);

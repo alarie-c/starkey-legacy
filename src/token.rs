@@ -22,7 +22,7 @@ pub struct Token {
     pub span: Span,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, PartialOrd, Eq, Ord)]
 pub enum TokenKind {
     // Grouping tokens
     LPar,
@@ -99,5 +99,14 @@ pub fn get_keyword(src: &String) -> Option<TokenKind> {
         "mut" => Some(TokenKind::Mut),
         "func" => Some(TokenKind::Func),
         _ => None,
+    }
+}
+
+pub fn is_leaf_node(kind: &TokenKind) -> bool {
+    match kind {
+        TokenKind::Literal { value: _ } => true,
+        TokenKind::Number { value: _ } => true,
+        TokenKind::Ident { value: _ } => true,
+        _ => false,
     }
 }
