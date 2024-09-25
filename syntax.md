@@ -23,7 +23,7 @@ mut y :: str = "Hello";         ~ mut str
 
 Mutate a variable
 ```
-mut index :: 0;
+mut index := 0;
 index <- 1;                     ~ mutates `index` to 1
 ```
 
@@ -35,7 +35,7 @@ welcome <- concat(welcome, name);
 
 Attempting to mutate a value
 ```
-version :: str = "1.0.1";
+version: str = "1.0.1";
 version <- "1.2.1"              ~ err: `version` is not a mutable value
 ```
 
@@ -48,7 +48,7 @@ This means functions that do this must be annotated with "mut."
 
 Basic function
 ```
-func add_five(x :: int) -> int
+func add_five(x: int) -> int
 {
     return x + 5;
 }
@@ -56,9 +56,9 @@ func add_five(x :: int) -> int
 
 Function that modifies values outside its environment
 ```
-my_map :: std.HashMap[int, str] = std.HashMap.empty();
+my_map: std.HashMap[int, str] = std.HashMap.empty();
 
-mut func new_entry(const value :: int, const key :: str)
+mut func new_entry(const value: int, const key: str)
 {
     my_map.insert(value, key);
 } 
@@ -66,7 +66,7 @@ mut func new_entry(const value :: int, const key :: str)
 
 Using "mut" keyword to declare a value changing
 ```
-func print_student_name(mut student :: Student) 
+func print_student_name(mut student: Student) 
 {
     $ student.name <- "Jane Doe";
 }
@@ -94,7 +94,7 @@ doesn't match the code that you're writing. This is why things like "const"
 are important.
 
 ```
-func print(mut data :: Data)
+func print(mut data: Data)
 {
     data.value <- 4;
     $ data;
