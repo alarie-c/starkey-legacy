@@ -1,6 +1,6 @@
 use core::str;
 
-use crate::token::{self, Span, Token, TokenKind};
+use crate::lexer::token::{self, Span, Token, TokenKind};
 
 pub struct Lexer<'a> {
     pub src: &'a [u8],
@@ -78,7 +78,7 @@ impl<'a> Lexer<'a> {
                     dbg!(&id.len());
 
                     // Push tokens based on keyword match result
-                    if let Some(kind) = token::get_keyword(&id) {
+                    if let Some(kind) = TokenKind::get_keyword(&id) {
                         self.output.push(Token {
                             kind,
                             span: Span::from(i0, id.len()),

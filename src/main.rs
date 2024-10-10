@@ -1,9 +1,10 @@
 use std::{env, fs, io};
 
+use ast::parser::Parser;
+use lexer::lexer::Lexer;
+
 mod ast;
 mod lexer;
-mod parser;
-mod token;
 
 fn main() -> Result<(), io::Error> {
     let args: Vec<String> = env::args().collect();
@@ -25,9 +26,13 @@ fn main() -> Result<(), io::Error> {
     println!("Source file path: {path}");
 
     // Initialize lexer for file
-    let mut lexer = lexer::Lexer::new(src.as_str());
+    let mut lexer = Lexer::new(src.as_str());
     let tokens = lexer.scan();
     dbg!(&tokens);
+
+    // Initialize parser and parse
+    let mut parser = Parser::new(tokens);
+    dbg!(parser.parse());
 
     Ok(())
 }
